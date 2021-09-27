@@ -28,11 +28,13 @@ let getSectionsWithRoots N f domain =
         |> List.ofSeq
     
     printfn $"Number of sections of function sign reversal: %A{List.length sectionsWithRoot}"
+    printfn ""
+    
     sectionsWithRoot
     
 let applyBisectionMethod eps f sectionWithRoot =
     printfn $"Start applying bisection method with eps=%A{eps} to section:\n%A{sectionWithRoot}"
-    printfn $"Initial approximation to the root: %A{sectionWithRoot.End - sectionWithRoot.Begin}"
+    printfn $"Initial approximation to the root: %A{(sectionWithRoot.End + sectionWithRoot.Begin) / 2.}"
     
     let rec applyBisectionMethodRec i section =
         if section.End - section.Begin <= 2. * eps then
@@ -54,13 +56,16 @@ let applyBisectionMethod eps f sectionWithRoot =
     printfn $"Approximated solution = %A{approximatedSolution}"
     printfn $"Absolute value of the discrepancy = %A{approximatedSolution |> f |> abs}"
     
+    printfn ""
+    
     approximatedSolution
     
 let applyNewtonMethod eps f' f sectionWithRoot =
     printfn $"Start applying Newton's method with eps=%A{eps} to section:\n%A{sectionWithRoot}"
-    printfn $"Initial approximation to the root: %A{sectionWithRoot.End - sectionWithRoot.Begin}"
     
     let x0 = (sectionWithRoot.End + sectionWithRoot.Begin) / 2.
+    printfn $"Initial approximation to the root: %A{x0}"
+    
     let rec applyNewtonMethodRec i x =
         let newX = x - (f x) / (f' x)
         if abs(newX - x) < eps then
@@ -74,13 +79,16 @@ let applyNewtonMethod eps f' f sectionWithRoot =
     printfn $"Approximated solution = %A{approximatedSolution}"
     printfn $"Absolute value of the discrepancy = %A{approximatedSolution |> f |> abs}"
     
+    printfn ""
+    
     approximatedSolution
     
 let applyModifiedNewtonMethod eps f' f sectionWithRoot =
     printfn $"Start applying modified Newton's method with eps=%A{eps} to section:\n%A{sectionWithRoot}"
-    printfn $"Initial approximation to the root: %A{sectionWithRoot.End - sectionWithRoot.Begin}"
     
     let x0 = (sectionWithRoot.End + sectionWithRoot.Begin) / 2.
+    printfn $"Initial approximation to the root: %A{x0}"
+
     let rec applyNewtonMethodRec i x =
         let newX = x - (f x) / (f' x0)
         if abs(newX - x) < eps then
@@ -94,14 +102,17 @@ let applyModifiedNewtonMethod eps f' f sectionWithRoot =
     printfn $"Approximated solution = %A{approximatedSolution}"
     printfn $"Absolute value of the discrepancy = %A{approximatedSolution |> f |> abs}"
     
+    printfn ""
+    
     approximatedSolution
     
 let applySecantMethod eps f sectionWithRoot =
     printfn $"Start applying secant method with eps=%A{eps} to section:\n%A{sectionWithRoot}"
-    printfn $"Initial approximation to the root: %A{sectionWithRoot.End - sectionWithRoot.Begin}"
     
-    let x0 = (sectionWithRoot.End + sectionWithRoot.Begin) / 3.
-    let x1 = (sectionWithRoot.End + sectionWithRoot.Begin) * 2. / 3.
+    let x0 = sectionWithRoot.Begin
+    printfn $"Initial approximation to the root: %A{x0}"
+    
+    let x1 = sectionWithRoot.End
     let rec applyNewtonMethodRec i x1 x0 =
         let x2 = x1 - (f x1) / (f x1 - f x0) * (x1 - x0)
         if abs(x2 - x1) < eps then
@@ -115,6 +126,8 @@ let applySecantMethod eps f sectionWithRoot =
     printfn $"Approximated solution = %A{approximatedSolution}"
     printfn $"Absolute value of the discrepancy = %A{approximatedSolution |> f |> abs}"
     
+    printfn ""
+    
     approximatedSolution
 
 let findRoots rootSeparationMethod rootClarificationMethod f domain =
@@ -126,11 +139,12 @@ let main _ =
     let f x = 1.2 * x ** 4. + 2. * x ** 3. - 13. * x ** 2. - 14.2 * x - 24.1
     let f' x = 4.8 * x ** 3. + 6. * x ** 2. - 26. * x - 14.2
     let domain = {Begin = -5.; End = 5.}
-    let epsilon = 1e-06
+    let epsilon = 1e-12
     let N = 10000.
     
     printfn "NUMERICAL METHODS FOR SOLVING NONLINEAR EQUATIONS"
     printfn "Function f(x): 1.2 * x ** 4. + 2. * x ** 3. + - 13. * x ** 2. - 14.2 * x - 24.1"
+    printfn ""
     
     let rootSeparationMethods = [getSectionsWithRoots N]
     let rootClarificationMethods = [applyBisectionMethod epsilon
