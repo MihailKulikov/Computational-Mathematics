@@ -130,6 +130,7 @@ let rec interpolate interpolationMethods f table =
 let main _ =
     printfn "Задача алгебраического интерполирования"
     printfn "Вариант 13"
+    printfn "f(x) = log(1 + x) - exp(x)"
     printfn ""
 
     let f x = log (1. + x) - exp x
